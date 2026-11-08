@@ -1,0 +1,787 @@
+/* ==========================================================================
+   MyTinerary - Destination & Itinerary Details View (/Details/:id)
+   Unified Glassmorphic Dark Design System
+   ========================================================================== */
+
+.details-page {
+  min-height: 100vh;
+  width: 100%;
+  padding-bottom: 6rem;
+  background-color: #070b12;
+  background-image: radial-gradient(
+      circle at 15% 10%,
+      rgba(99, 102, 241, 0.14) 0%,
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 85% 30%,
+      rgba(245, 158, 11, 0.09) 0%,
+      transparent 50%
+    );
+  color: #ffffff;
+  font-family: "Open Sans", "Montserrat", -apple-system, BlinkMacSystemFont, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* --------------------------------------------------------------------------
+   1. City Hero Banner
+   -------------------------------------------------------------------------- */
+.details-hero {
+  position: relative;
+  width: 100%;
+  min-height: 54vh;
+  padding: 7.75rem 2rem 3.5rem;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.details-hero__bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.03);
+  filter: brightness(0.65) saturate(1.1);
+  z-index: 0;
+}
+
+.details-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+      180deg,
+      rgba(6, 9, 17, 0.55) 0%,
+      rgba(6, 9, 17, 0.35) 40%,
+      rgba(6, 9, 17, 0.92) 85%,
+      #060911 100%
+    ),
+    radial-gradient(
+      circle at 20% 80%,
+      rgba(6, 9, 17, 0.7) 0%,
+      transparent 60%
+    );
+  z-index: 1;
+}
+
+.details-hero__inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.details-hero__back {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.details-hero__back:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  transform: translateX(-3px);
+}
+
+.details-hero__badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.details-hero__country-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.16);
+  border: 1px solid rgba(245, 158, 11, 0.38);
+  color: #fbbf24;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.details-hero__flag {
+  width: 18px;
+  height: 13px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.details-hero__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.details-hero__chip .material-icons {
+  font-size: 0.95rem;
+  color: #818cf8;
+}
+
+.details-hero__title {
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  color: #ffffff;
+  text-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+}
+
+.details-hero__desc {
+  margin: 0;
+  max-width: 780px;
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* --------------------------------------------------------------------------
+   2. Main Content & Itineraries Section
+   -------------------------------------------------------------------------- */
+.details-main {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 5rem;
+}
+
+.details-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.details-section-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.details-section-title {
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.details-section-count {
+  padding: 0.28rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.16);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  color: #a5b4fc;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.itineraries-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.itinerary-card {
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 24px 55px rgba(0, 0, 0, 0.45);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.itinerary-card:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 28px 65px rgba(0, 0, 0, 0.55);
+}
+
+.itinerary-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.35rem 1.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.itinerary-author {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.itinerary-author__avatar-wrap {
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  min-height: 52px;
+  border-radius: 9999px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  background: rgba(15, 23, 42, 0.85);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.itinerary-author__avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  color: transparent;
+  font-size: 0;
+}
+
+.itinerary-author__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.itinerary-author__name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.itinerary-author__role {
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.itinerary-like-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.itinerary-like-btn:hover {
+  background: rgba(244, 63, 94, 0.15);
+  border-color: rgba(244, 63, 94, 0.4);
+  transform: translateY(-1px);
+}
+
+.itinerary-like-btn.is-liked {
+  background: rgba(244, 63, 94, 0.18);
+  border-color: rgba(244, 63, 94, 0.45);
+  color: #fda4af;
+}
+
+.itinerary-like-btn .material-icons {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.75);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.itinerary-like-btn.is-liked .material-icons {
+  color: #f43f5e;
+}
+
+.itinerary-like-btn:hover .material-icons {
+  transform: scale(1.12);
+}
+
+/* Itinerary Body Grid */
+.itinerary-card__overview {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 1.75rem;
+  padding: 1.75rem;
+}
+
+.itinerary-card__media {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  min-height: 240px;
+  max-height: 290px;
+  background-color: #18181b;
+}
+
+.itinerary-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.itinerary-card__img.is-loaded {
+  opacity: 1;
+}
+
+.itinerary-card:hover .itinerary-card__img {
+  transform: scale(1.04);
+}
+
+.itinerary-card__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.15rem;
+}
+
+.itinerary-card__title {
+  margin: 0 0 0.65rem;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.itinerary-card__desc {
+  margin: 0;
+  font-size: 0.96rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.itinerary-meta-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.itinerary-meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.48rem 0.95rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.itinerary-meta-pill .material-icons {
+  font-size: 1.05rem;
+  color: #fbbf24;
+}
+
+.itinerary-price-icons {
+  color: #34d399;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.itinerary-price-scale {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5px;
+}
+
+.itinerary-price-char {
+  font-size: 0.95rem;
+  font-weight: 800;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.itinerary-price-char.is-active {
+  color: #34d399;
+  opacity: 1;
+  text-shadow: 0 0 8px rgba(52, 211, 153, 0.4);
+}
+
+.itinerary-price-char.is-inactive {
+  color: #71717a;
+  opacity: 0.35;
+}
+
+.itinerary-price-fraction {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 600;
+  margin-left: 0.2rem;
+}
+
+.itinerary-hashtags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.itinerary-hashtag {
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  color: #a5b4fc;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.itinerary-card__toggle-bar {
+  padding: 0 1.75rem 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.itinerary-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+
+.itinerary-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.itinerary-card__expandable {
+  padding: 1.75rem;
+  background: rgba(6, 9, 17, 0.55);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   3. Activities Cards Grid (HeroSlider Style)
+   -------------------------------------------------------------------------- */
+.activities-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.activities-section__header {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.activities-section__title {
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.01em;
+}
+
+.activities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 1.25rem;
+}
+
+.activity-card {
+  position: relative;
+  height: 250px;
+  border-radius: 18px;
+  overflow: hidden;
+  background-color: #18181b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.4);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.32s ease, box-shadow 0.32s ease;
+}
+
+.activity-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(245, 158, 11, 0.5);
+  box-shadow: 0 20px 42px rgba(0, 0, 0, 0.55);
+}
+
+.activity-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.activity-card__img.is-loaded {
+  opacity: 1;
+}
+
+.activity-card:hover .activity-card__img {
+  transform: scale(1.08);
+}
+
+.activity-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 9, 17, 0.15) 0%,
+    rgba(6, 9, 17, 0.45) 45%,
+    rgba(6, 9, 17, 0.94) 100%
+  );
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.activity-card__badge {
+  align-self: flex-start;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fbbf24;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.activity-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.activity-card__title {
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.3;
+}
+
+.activity-card__desc {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.72);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Empty Itineraries State */
+.details-empty {
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 3.5rem 2rem;
+  text-align: center;
+  max-width: 580px;
+  margin: 1rem auto;
+}
+
+.details-empty__icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.14);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.15rem;
+}
+
+.details-empty__title {
+  margin: 0 0 0.5rem;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.details-empty__text {
+  margin: 0 0 1.5rem;
+  font-size: 0.94rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.55;
+}
+
+.details-empty__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.78rem 1.5rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.details-empty__btn:hover {
+  transform: translateY(-2px);
+  color: #ffffff;
+  box-shadow: 0 12px 26px rgba(234, 88, 12, 0.4);
+}
+
+@media (max-width: 900px) {
+  .itinerary-card__overview {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: 1.35rem;
+  }
+
+  .itinerary-card__media {
+    min-height: 200px;
+    max-height: 240px;
+  }
+
+  .itinerary-card__title {
+    font-size: 1.35rem;
+  }
+
+  .activities-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 1rem;
+    padding-bottom: 0.65rem;
+    scrollbar-width: none;
+  }
+
+  .activities-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .activity-card {
+    flex: 0 0 82%;
+    min-width: 240px;
+    max-width: 300px;
+    height: 230px;
+    scroll-snap-align: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .details-hero {
+    padding: 5.5rem 1rem 2rem;
+    min-height: 42vh;
+  }
+
+  .details-hero__title {
+    font-size: 2rem;
+    line-height: 1.1;
+  }
+
+  .details-hero__desc {
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .details-main {
+    padding: 1rem 0.85rem 3.5rem;
+  }
+
+  .itinerary-card {
+    border-radius: 18px;
+    margin-bottom: 1.5rem;
+  }
+
+  .itinerary-card__top {
+    padding: 1rem;
+  }
+
+  .itinerary-card__overview {
+    padding: 1rem;
+  }
+
+  .itinerary-card__toggle-bar {
+    padding: 0 1rem 1.25rem;
+  }
+
+  .itinerary-toggle-btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+    font-size: 0.84rem;
+  }
+
+  .itinerary-card__expandable {
+    padding: 1rem;
+    gap: 1.5rem;
+  }
+
+  .itinerary-meta-pill {
+    font-size: 0.78rem;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .activity-card {
+    flex: 0 0 85%;
+    min-width: 220px;
+    max-width: 275px;
+    height: 210px;
+  }
+}

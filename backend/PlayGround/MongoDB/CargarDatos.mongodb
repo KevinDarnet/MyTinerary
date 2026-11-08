@@ -1,0 +1,89 @@
+const database = "MyTinerary";
+use(database);
+
+db.itinerarios.insertMany([
+  {
+    image:
+      "https://images.unsplash.com/photo-1608037521277-154cd1b89191?auto=format&fit=crop&w=800&q=80",
+    name: "Great Wall of China",
+    userimage:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=250&q=80",
+    username: "Iwao Komiyama",
+    details:
+      "Few cities in the world have served for so long as the political headquarters and cultural centre of an area as immense as China.",
+    price: 4,
+    duration: "2h",
+    hashtag: ["#Pekin", "#greatwall"],
+    likes: [],
+    activities: [
+      "62285659fdba39406f642b01",
+      "62285659fdba39406f642b02",
+      "62285659fdba39406f642b03",
+    ],
+    comments: [],
+    cityId: "62285659fdba39406f642a01",
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?auto=format&fit=crop&w=800&q=80",
+    name: "Yonghe Temple & Imperial Beijing",
+    userimage:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=250&q=80",
+    username: "Ramon Garcia",
+    details:
+      "Visit to Yonghe Temple, Forbidden City, and Tiananmen Square. One of the greatest historical and Buddhist tours in Beijing.",
+    price: 2,
+    duration: "1.5h",
+    hashtag: ["#YongheTemple", "#Pekin"],
+    likes: [],
+    activities: [
+      "62285659fdba39406f642b04",
+      "62285659fdba39406f642b05",
+      "62285659fdba39406f642b06",
+    ],
+    comments: [],
+    cityId: "62285659fdba39406f642a01",
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1568322445389-f64ac2515020?auto=format&fit=crop&w=800&q=80",
+    name: "Pyramid of Khafre",
+    userimage:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=250&q=80",
+    username: "Lujan Rodriguez",
+    details:
+      "Built by Khufu's son Khafre, it at first appears to be larger than his father's earlier pyramid as it stands on a higher piece of land.",
+    price: 5,
+    duration: "5h",
+    hashtag: ["#Chephren", "#Pyramid"],
+    likes: [],
+    activities: [
+      "62285659fdba39406f642b07",
+      "62285659fdba39406f642b08",
+      "62285659fdba39406f642b09",
+    ],
+    comments: [],
+    cityId: "62285659fdba39406f642a02",
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1539768942893-daf53e448371?auto=format&fit=crop&w=800&q=80",
+    name: "Solar Boat Museum",
+    userimage:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=250&q=80",
+    username: "James Rodriguez",
+    details:
+      "Excavations on the south and east sides of the Pyramid of Cheops in 1954 brought to light five long cavities for boats, with a Solar Barque broken into more than a thousand pieces as a votive offering.",
+    price: 2,
+    duration: "1.5h",
+    hashtag: ["#Solarboatmuseum", "#Guiza"],
+    likes: [],
+    activities: [
+      "62285659fdba39406f642b0a",
+      "62285659fdba39406f642b0b",
+      "62285659fdba39406f642b0c",
+    ],
+    comments: [],
+    cityId: "62285659fdba39406f642a02",
+  },
+]);
