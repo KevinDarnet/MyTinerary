@@ -23,7 +23,10 @@ let dbStatus = {
   details: null,
 };
 
+let isSeeded = false;
+
 async function seedMongoIfNeeded() {
+  if (isSeeded) return dbStatus.counts;
   try {
     const localData = loadStore();
 
@@ -115,7 +118,7 @@ function enableFallback(reason) {
 }
 
 async function connectDatabase() {
-  if (cached.conn && mongoose.connection.readyState === 1) {
+  if (mongoose.connection.readyState === 1) {
     dbStatus.connected = true;
     dbStatus.mode = "mongodb-atlas";
     return dbStatus;
@@ -159,24 +162,18 @@ async function connectDatabase() {
     }
 
     cached.conn = await cached.promise;
-    const counts = await seedMongoIfNeeded();
-    dbStatus = {
-      connected: true,
-      mode: "mongodb-atlas",
-      cluster: "cluster0.ejehvtx.mongodb.net",
-      database: mongoose.connection.name || "MyTinerary",
-      counts,
-    };
-    console.log(
-      `Database connected (MongoDB Atlas: ${dbStatus.database} @ ${
-        dbStatus.cluster
-      } | Cities: ${counts?.cities ?? 0}, Itineraries: ${
-        counts?.itineraries ?? 0
-      }, Activities: ${counts?.activities ?? 0}, Users: ${counts?.users ?? 0})`
-    );
+    if (mongoose.connection.readyState === 1) {
+      dbStatus.connected = true;
+      dbStatus.mode = "mongodb-atlas";
+      if (!isSeeded) {
+        dbStatus.counts = await seedMongoIfNeeded();
+        isSeeded = true;
+      }
+    }
     return dbStatus;
   } catch (err) {
     cached.promise = null;
+    cached.conn = null;
     console.warn(
       `[Database] External MongoDB unreachable (${err.message}). Switching to local persistent store.`
     );

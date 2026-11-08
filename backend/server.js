@@ -1,3 +1,11 @@
+// Polyfill for Node 20/22 buffer deprecation in legacy transitive dependencies
+const bufferModule = require("buffer");
+if (!bufferModule.SlowBuffer) {
+  bufferModule.SlowBuffer = bufferModule.Buffer;
+} else if (!bufferModule.SlowBuffer.prototype) {
+  bufferModule.SlowBuffer.prototype = bufferModule.Buffer.prototype;
+}
+
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env"), override: true });
 const cors = require("cors");
@@ -13,25 +21,37 @@ const PORT = Number(process.env.PORT) || 4000;
 
 const app = express();
 
-// Configure CORS with allowed local origins
-const allowedOrigins = (
-  process.env.CORS_ORIGINS || "http://localhost:3000,http://127.0.0.1:3000"
+// Configure CORS: Support Vercel deployment domains, custom domains, local development, and same-origin requests
+const configuredOrigins = (
+  process.env.CORS_ORIGINS ||
+  "http://localhost:3000,http://127.0.0.1:3000,http://localhost:4000"
 )
   .split(",")
-  .map((o) => o.trim());
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+const isOriginAllowed = (origin) => {
+  // Allow same-origin requests, server-to-server, curl, Postman, or internal rewrites where origin header is absent
+  if (!origin) return true;
+  // Allow wildcard or explicit whitelist
+  if (configuredOrigins.includes("*") || configuredOrigins.includes(origin)) return true;
+  // Allow any Vercel preview or production deployment (*.vercel.app)
+  if (/^https:\/\/.*\.vercel\.app$/.test(origin)) return true;
+  // Default to allowing the requesting origin in monorepo environment
+  return true;
+};
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like curl, Postman, or server-to-server) or matching allowed origins
-      if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes("*")) {
+    origin: (origin, callback) => {
+      if (isOriginAllowed(origin)) {
         callback(null, true);
       } else {
         callback(null, true);
       }
     },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
     credentials: true,
   })
 );
