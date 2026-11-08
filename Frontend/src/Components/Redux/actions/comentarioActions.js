@@ -1,5 +1,12 @@
 import axios from "axios";
-import { API_BASE_URL } from "../../../config/api";
+
+const API_URL =
+  typeof window !== "undefined" &&
+  window.location.hostname !== "localhost" &&
+  window.location.hostname !== "127.0.0.1" &&
+  (process.env.REACT_APP_API_URL || "").includes("localhost")
+    ? ""
+    : (process.env.REACT_APP_API_URL || "").replace(/\/api\/?$/, "");
 
 const dataInicial = {
   cambio: false,
@@ -24,7 +31,7 @@ export const cargarComentario =
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(
-        `${API_BASE_URL}/itineraries/comment`,
+        `${API_URL}/api/itineraries/comment`,
         { comentario },
         {
           headers: {
@@ -45,7 +52,7 @@ export const actualizarComentario =
     try {
       const token = localStorage.getItem("token");
       const res = await axios.put(
-        `${API_BASE_URL}/itineraries/comment/modify`,
+        `${API_URL}/api/itineraries/comment/modify`,
         { comentario },
         {
           headers: {
@@ -66,7 +73,7 @@ export const eliminarComentario =
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(
-        `${API_BASE_URL}/itineraries/comment/delete/${id}`,
+        `${API_URL}/api/itineraries/comment/delete/${id}`,
         {},
         {
           headers: {

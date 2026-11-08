@@ -6,11 +6,18 @@ import "../Styles/styles.css";
 import Datos from "../Json/datos";
 import { Autoplay, Navigation } from "swiper";
 import axios from "axios";
-import { API_BASE_URL } from "../../config/api";
+
+const API_URL =
+  typeof window !== "undefined" &&
+  window.location.hostname !== "localhost" &&
+  window.location.hostname !== "127.0.0.1" &&
+  (process.env.REACT_APP_API_URL || "").includes("localhost")
+    ? ""
+    : (process.env.REACT_APP_API_URL || "").replace(/\/api\/?$/, "");
 
 export default function App() {
   useEffect(() => {
-    axios.get(`${API_BASE_URL}/allcities`).catch(() => {});
+    axios.get(`${API_URL}/api/allcities`).catch(() => {});
   }, []);
 
   return (

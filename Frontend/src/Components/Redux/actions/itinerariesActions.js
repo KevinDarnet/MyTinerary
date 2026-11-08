@@ -1,12 +1,19 @@
 import axios from "axios";
 import { ITINERARIES_GET } from "./types";
-import { API_BASE_URL } from "../../../config/api";
+
+const API_URL =
+  typeof window !== "undefined" &&
+  window.location.hostname !== "localhost" &&
+  window.location.hostname !== "127.0.0.1" &&
+  (process.env.REACT_APP_API_URL || "").includes("localhost")
+    ? ""
+    : (process.env.REACT_APP_API_URL || "").replace(/\/api\/?$/, "");
 
 const itinerariesActions = {
   itinerarioPorCiudad: (id) => {
     return async (dispatch) => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/cityItineraries?cityId=${id}`);
+        const res = await axios.get(`${API_URL}/api/cityItineraries?cityId=${id}`);
         dispatch({ type: ITINERARIES_GET, payload: res.data?.response || [] });
       } catch (error) {
         console.error("Error fetching itineraries by city:", error);
@@ -17,7 +24,7 @@ const itinerariesActions = {
   getOneItinerary: (id) => {
     return async (dispatch) => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/itineraries/${id}`);
+        const res = await axios.get(`${API_URL}/api/itineraries/${id}`);
         dispatch({ type: "oneItineraryAndActivities", payload: res });
       } catch (error) {
         console.error("Error fetching itinerary:", error);
@@ -29,7 +36,7 @@ const itinerariesActions = {
     return async () => {
       try {
         const response = await axios.put(
-          `${API_BASE_URL}/like/${id}`,
+          `${API_URL}/api/like/${id}`,
           {},
           {
             headers: {

@@ -1,5 +1,12 @@
 import axios from "axios";
-import { API_BASE_URL } from "../../../config/api";
+
+const API_URL =
+  typeof window !== "undefined" &&
+  window.location.hostname !== "localhost" &&
+  window.location.hostname !== "127.0.0.1" &&
+  (process.env.REACT_APP_API_URL || "").includes("localhost")
+    ? ""
+    : (process.env.REACT_APP_API_URL || "").replace(/\/api\/?$/, "");
 
 const normalizeUserObject = (raw) => {
   if (!raw || typeof raw !== "object") return null;
@@ -53,7 +60,7 @@ const userActions = {
   signUpUser: (userData) => {
     return async (dispatch) => {
       try {
-        const res = await axios.post(`${API_BASE_URL}/auth/signup`, {
+        const res = await axios.post(`${API_URL}/api/auth/signup`, {
           userData,
         });
         dispatch({
@@ -89,7 +96,7 @@ const userActions = {
   signInUser: (loggedUser) => {
     return async (dispatch) => {
       try {
-        const user = await axios.post(`${API_BASE_URL}/auth/login`, {
+        const user = await axios.post(`${API_URL}/api/auth/login`, {
           loggedUser,
         });
         if (user.data.success) {
@@ -135,7 +142,7 @@ const userActions = {
     return async (dispatch) => {
       try {
         if (closeuser) {
-          await axios.post(`${API_BASE_URL}/auth/signout`, { closeuser });
+          await axios.post(`${API_URL}/api/auth/signout`, { closeuser });
         }
       } catch (error) {
         // Ignore network error on signout cleanup
@@ -148,7 +155,7 @@ const userActions = {
   verificarToken: (token) => {
     return async (dispatch) => {
       try {
-        const user = await axios.get(`${API_BASE_URL}/auth/signInToken`, {
+        const user = await axios.get(`${API_URL}/api/auth/signInToken`, {
           headers: {
             Authorization: "Bearer " + token,
           },

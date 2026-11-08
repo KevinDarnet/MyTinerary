@@ -1,11 +1,18 @@
 import axios from "axios";
-import { API_BASE_URL } from "../../../config/api";
+
+const API_URL =
+  typeof window !== "undefined" &&
+  window.location.hostname !== "localhost" &&
+  window.location.hostname !== "127.0.0.1" &&
+  (process.env.REACT_APP_API_URL || "").includes("localhost")
+    ? ""
+    : (process.env.REACT_APP_API_URL || "").replace(/\/api\/?$/, "");
 
 const citiesActions = {
   fetchearCities: () => {
     return async (dispatch) => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/allcities`);
+        const res = await axios.get(`${API_URL}/api/allcities`);
         const ciudades = res.data?.response?.ciudades || [];
         dispatch({ type: "fetch", send: ciudades });
       } catch (err) {
@@ -17,7 +24,7 @@ const citiesActions = {
   findOneCity: (id) => {
     return async (dispatch) => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/allcities/${id}`);
+        const res = await axios.get(`${API_URL}/api/allcities/${id}`);
         dispatch({ type: "fetchOne", send: res.data?.respuesta || {} });
       } catch (err) {
         console.error("Error fetching city details:", err);
@@ -28,7 +35,7 @@ const citiesActions = {
   deleteCities: (id) => {
     return async (dispatch) => {
       try {
-        const res = await axios.delete(`${API_BASE_URL}/allcities/${id}`);
+        const res = await axios.delete(`${API_URL}/api/allcities/${id}`);
         dispatch({ type: "delete", send: res.data?.response?.ciudades || [] });
       } catch (err) {
         console.error("Error deleting city:", err);
@@ -43,7 +50,7 @@ const citiesActions = {
   chargeCities: (name, ciudad) => {
     return async (dispatch) => {
       try {
-        const res = await axios.post(`${API_BASE_URL}/allcities`, {
+        const res = await axios.post(`${API_URL}/api/allcities`, {
           name,
           ciudad,
         });

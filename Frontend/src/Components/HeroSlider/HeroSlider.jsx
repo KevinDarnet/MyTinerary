@@ -1,9 +1,16 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { API_BASE_URL } from "../../config/api";
 import DatosFallback from "../Json/datos";
 import "./HeroSlider.css";
+
+const API_URL =
+  typeof window !== "undefined" &&
+  window.location.hostname !== "localhost" &&
+  window.location.hostname !== "127.0.0.1" &&
+  (process.env.REACT_APP_API_URL || "").includes("localhost")
+    ? ""
+    : (process.env.REACT_APP_API_URL || "").replace(/\/api\/?$/, "");
 
 const AUTOPLAY_DURATION_MS = 5000;
 
@@ -75,7 +82,7 @@ export default function HeroSlider() {
 
     async function loadDestinationsOnce() {
       try {
-        const res = await axios.get(`${API_BASE_URL}/allcities`);
+        const res = await axios.get(`${API_URL}/api/allcities`);
         const apiCities = res.data?.response?.ciudades;
         if (isMounted && Array.isArray(apiCities) && apiCities.length > 0) {
           setDestinations(apiCities.map(normalizeDestination));
