@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm --prefix Frontend run build",
+  "buildCommand": "npm --prefix Frontend install --legacy-peer-deps && npm --prefix Frontend run build",
   "outputDirectory": "Frontend/build",
   "rewrites": [
     {

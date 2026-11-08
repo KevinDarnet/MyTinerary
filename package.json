@@ -4,13 +4,13 @@
   "description": "MyTinerary - Fullstack Travel App (React + Express Serverless on Vercel)",
   "main": "api/index.js",
   "scripts": {
-    "build": "npm --prefix Frontend run build",
-    "vercel-build": "npm --prefix Frontend install && npm --prefix Frontend run build",
+    "build": "npm --prefix Frontend install --legacy-peer-deps && npm --prefix Frontend run build",
+    "vercel-build": "npm --prefix Frontend install --legacy-peer-deps && npm --prefix Frontend run build",
     "start": "node backend/server.js",
     "dev:backend": "node --watch backend/server.js",
     "dev:frontend": "npm --prefix Frontend start",
     "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"blue,green\" \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "postinstall": "npm --prefix Frontend run postinstall"
+    "postinstall": "npm --prefix Frontend install --legacy-peer-deps"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
