@@ -15,5 +15,6 @@ const ciudadesSchema = new mongoose.Schema({
   flag: { type: String, default: "" },
 });
 
-const Ciudades = mongoose.model("ciudades", ciudadesSchema);
+const Ciudades =
+  mongoose.models.ciudades || mongoose.model("ciudades", ciudadesSchema);
 module.exports = Ciudades;

@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "buildCommand": "npm --prefix Frontend run build",
+  "outputDirectory": "Frontend/build",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/((?!api/|.*\\..*).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

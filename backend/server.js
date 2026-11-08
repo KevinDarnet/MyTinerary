@@ -41,7 +41,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 
 // Health & Ping endpoints
-app.get(["/api/health", "/api/ping"], (req, res) => {
+app.get(["/api/health", "/health", "/api/ping", "/ping"], (req, res) => {
   res.status(200).json({
     status: "OK",
     success: true,
@@ -52,11 +52,26 @@ app.get(["/api/health", "/api/ping"], (req, res) => {
   });
 });
 
-// API Routes
-app.use("/api", Router);
-app.use("/api", itinerariesRouter);
-app.use("/api", routerUser);
-app.use("/api", activitiesroutes);
+// Middleware to ensure Database is connected before executing any route in Serverless / Standalone
+app.use(async (req, res, next) => {
+  try {
+    await connectDatabase();
+    next();
+  } catch (err) {
+    console.error("[Database Middleware Error]:", err.message);
+    res.status(500).json({
+      success: false,
+      message: "Database connection failed",
+      error: process.env.NODE_ENV === "development" ? err.message : undefined,
+    });
+  }
+});
+
+// API Routes mounted on both "/api" and "/" for seamless Vercel Serverless & local compatibility
+app.use(["/api", "/"], Router);
+app.use(["/api", "/"], itinerariesRouter);
+app.use(["/api", "/"], routerUser);
+app.use(["/api", "/"], activitiesroutes);
 
 // 404 Handler for unmatched routes
 app.use((req, res) => {
@@ -101,4 +116,8 @@ async function startServer() {
   });
 }
 
-startServer();
+if (require.main === module) {
+  startServer();
+}
+
+module.exports = app;

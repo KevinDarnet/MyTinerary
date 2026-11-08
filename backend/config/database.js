@@ -11,6 +11,11 @@ const {
   loadStore,
 } = require("./localStore");
 
+let cached = global.mongoose;
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
 let dbStatus = {
   connected: false,
   mode: "initializing",
@@ -110,8 +115,16 @@ function enableFallback(reason) {
 }
 
 async function connectDatabase() {
+  if (cached.conn && mongoose.connection.readyState === 1) {
+    dbStatus.connected = true;
+    dbStatus.mode = "mongodb-atlas";
+    return dbStatus;
+  }
+
   const mongoUri =
-    process.env.MONGO_URI || "mongodb://127.0.0.1:27017/MyTinerary";
+    process.env.MONGODB_URI ||
+    process.env.MONGO_URI ||
+    "mongodb://127.0.0.1:27017/MyTinerary";
 
   if (process.env.USE_LOCAL_STORE === "true") {
     enableFallback("USE_LOCAL_STORE=true");
@@ -136,10 +149,16 @@ async function connectDatabase() {
   });
 
   try {
-    await mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 10000,
-      connectTimeoutMS: 10000,
-    });
+    if (!cached.promise) {
+      const opts = {
+        maxPoolSize: 10,
+        serverSelectionTimeoutMS: 5000,
+        connectTimeoutMS: 10000,
+      };
+      cached.promise = mongoose.connect(mongoUri, opts);
+    }
+
+    cached.conn = await cached.promise;
     const counts = await seedMongoIfNeeded();
     dbStatus = {
       connected: true,
@@ -157,6 +176,7 @@ async function connectDatabase() {
     );
     return dbStatus;
   } catch (err) {
+    cached.promise = null;
     console.warn(
       `[Database] External MongoDB unreachable (${err.message}). Switching to local persistent store.`
     );
