@@ -1,16 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { API_URL } from "../../config/api";
 import DatosFallback from "../Json/datos";
 import "./HeroSlider.css";
-
-const API_URL =
-  typeof window !== "undefined" &&
-  window.location.hostname !== "localhost" &&
-  window.location.hostname !== "127.0.0.1" &&
-  (process.env.REACT_APP_API_URL || "").includes("localhost")
-    ? ""
-    : (process.env.REACT_APP_API_URL || "").replace(/\/api\/?$/, "");
 
 const AUTOPLAY_DURATION_MS = 5000;
 

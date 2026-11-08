@@ -17,41 +17,39 @@ const itinerariesRouter = require("./routes/itinerariesroutes");
 const routerUser = require("./routes/routesUser");
 const activitiesroutes = require("./routes/activitiesroutes");
 
-const PORT = Number(process.env.PORT) || 4000;
+const PORT = process.env.PORT || 4000;
 
 const app = express();
 
-// Configure CORS: Support Vercel deployment domains, custom domains, local development, and same-origin requests
-const configuredOrigins = (
-  process.env.CORS_ORIGINS ||
-  "http://localhost:3000,http://127.0.0.1:3000,http://localhost:4000"
-)
-  .split(",")
-  .map((o) => o.trim())
-  .filter(Boolean);
+// Configure CORS: Support local development, FRONTEND_URL, and Firebase domains (*.web.app, *.firebaseapp.com)
+const rawFrontendUrl = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL.trim().replace(/\/+$/, "")
+  : "";
 
-const isOriginAllowed = (origin) => {
-  // Allow same-origin requests, server-to-server, curl, Postman, or internal rewrites where origin header is absent
-  if (!origin) return true;
-  // Allow wildcard or explicit whitelist
-  if (configuredOrigins.includes("*") || configuredOrigins.includes(origin)) return true;
-  // Allow any Vercel preview or production deployment (*.vercel.app)
-  if (/^https:\/\/.*\.vercel\.app$/.test(origin)) return true;
-  // Default to allowing the requesting origin in monorepo environment
-  return true;
-};
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  rawFrontendUrl,
+  ...(process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(",").map((o) => o.trim().replace(/\/+$/, ""))
+    : []),
+].filter(Boolean);
 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (isOriginAllowed(origin)) {
+    origin: function (origin, callback) {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        origin.endsWith(".web.app") ||
+        origin.endsWith(".firebaseapp.com") ||
+        origin.endsWith(".vercel.app")
+      ) {
         callback(null, true);
       } else {
-        callback(null, true);
+        callback(new Error("Bloqueado por política CORS"));
       }
     },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
     credentials: true,
   })
 );

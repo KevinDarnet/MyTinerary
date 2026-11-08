@@ -1,13 +1,6 @@
 import axios from "axios";
 import { ITINERARIES_GET } from "./types";
-
-const API_URL =
-  typeof window !== "undefined" &&
-  window.location.hostname !== "localhost" &&
-  window.location.hostname !== "127.0.0.1" &&
-  (process.env.REACT_APP_API_URL || "").includes("localhost")
-    ? ""
-    : (process.env.REACT_APP_API_URL || "").replace(/\/api\/?$/, "");
+import { API_URL } from "../../../config/api";
 
 const itinerariesActions = {
   itinerarioPorCiudad: (id) => {
