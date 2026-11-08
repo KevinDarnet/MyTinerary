@@ -112,7 +112,6 @@ const usersControllers = {
         userPhoto,
         image,
         userimage,
-        from,
       } = req.body.userData;
 
       const resolvedPicture = (
@@ -129,80 +128,45 @@ const usersControllers = {
 
       const usuarioExiste = await User.findOne({ email });
       if (usuarioExiste) {
-        if (usuarioExiste.from.indexOf(from) !== -1) {
-          return res.json({
-            success: false,
-            from: "signup",
-            message:
-              "You have already registered with this method. Please Sign In.",
-          });
-        } else {
-          const contraseñaHasheada = bcryptjs.hashSync(password, 10);
-          usuarioExiste.from.push(from);
-          usuarioExiste.password.push(contraseñaHasheada);
-          if (resolvedPicture) {
-            usuarioExiste.picture = resolvedPicture;
-            usuarioExiste.photo = resolvedPicture;
-          }
-          if (from === "form-Signup") {
-            if (!requireEmailVerification) {
-              usuarioExiste.emailVerificado = true;
-            }
-            await usuarioExiste.save();
-            await sendEmail(email, usuarioExiste.uniqueString);
-            return res.json({
-              success: true,
-              from: "signup",
-              user: buildUserPayload(usuarioExiste),
-              message: requireEmailVerification
-                ? "We sent you an email to validate it, please check your inbox to complete Sign Up."
-                : "Your account has been updated and verified! Please Sign In.",
-            });
-          } else {
-            await usuarioExiste.save();
-            return res.json({
-              success: true,
-              from: "signup",
-              user: buildUserPayload(usuarioExiste),
-              message: "We added " + from + " to your Sign In methods",
-            });
-          }
-        }
-      } else {
-        const contraseñaHasheada = bcryptjs.hashSync(password, 10);
-        const nuevoUsuario = new User({
-          fullName,
-          email,
-          password: [contraseñaHasheada],
-          emailVerificado: from !== "form-Signup" || !requireEmailVerification,
-          country: Array.isArray(country) ? country : [country],
-          picture: resolvedPicture,
-          photo: resolvedPicture,
-          uniqueString: crypto.randomBytes(15).toString("hex"),
-          from: [from],
+        return res.json({
+          success: false,
+          from: "signup",
+          message:
+            "An account with this email already exists. Please Sign In.",
         });
+      }
 
-        await nuevoUsuario.save();
+      const contraseñaHasheada = bcryptjs.hashSync(password, 10);
+      const nuevoUsuario = new User({
+        fullName,
+        email,
+        password: [contraseñaHasheada],
+        emailVerificado: !requireEmailVerification,
+        country: Array.isArray(country) ? country : [country],
+        picture: resolvedPicture,
+        photo: resolvedPicture,
+        uniqueString: crypto.randomBytes(15).toString("hex"),
+        from: ["form-Signup"],
+      });
 
-        if (from !== "form-Signup") {
-          return res.json({
-            success: true,
-            from: "signup",
-            user: buildUserPayload(nuevoUsuario),
-            message:
-              "Congratulations, your account has been created with " + from,
-          });
-        } else {
-          await sendEmail(email, nuevoUsuario.uniqueString);
-          return res.json({
-            success: true,
-            from: "signup",
-            user: buildUserPayload(nuevoUsuario),
-            message: requireEmailVerification
-              ? "We sent you an email to validate it, please check your inbox to complete Sign Up."
-              : "Account created successfully! Please Sign In to continue.",
-          });
-        }
+      await nuevoUsuario.save();
+
+      if (requireEmailVerification) {
+        await sendEmail(email, nuevoUsuario.uniqueString);
+        return res.json({
+          success: true,
+          from: "signup",
+          user: buildUserPayload(nuevoUsuario),
+          message:
+            "We sent you an email to validate it, please check your inbox to complete Sign Up.",
+        });
+      } else {
+        return res.json({
+          success: true,
+          from: "signup",
+          user: buildUserPayload(nuevoUsuario),
+          message: "Account created successfully! Please Sign In to continue.",
+        });
       }
     } catch (error) {
       console.error("[Auth] Error in signUpUsers:", error.message);
@@ -221,12 +185,10 @@ const usersControllers = {
           ? loggedUser.email.trim().toLowerCase()
           : "";
       const password = loggedUser.password || "";
-      const from = loggedUser.from || "form-Signup";
 
       if (!email || !password) {
         return res.json({
           success: false,
-          from,
           message: "Please enter both email and password",
         });
       }
@@ -240,71 +202,38 @@ const usersControllers = {
         });
       }
 
-      const secretKey = process.env.SECRET_KEY || "MyPassword";
+      const requireEmailVerification =
+        process.env.REQUIRE_EMAIL_VERIFICATION === "true";
 
-      if (from !== "form-Signup") {
-        const contraseñaCoincide = usuarioExiste.password.filter((pass) =>
-          bcryptjs.compareSync(password, pass)
-        );
+      if (requireEmailVerification && !usuarioExiste.emailVerificado) {
+        return res.json({
+          success: false,
+          message: "Please verify your email address before signing in.",
+        });
+      }
 
-        if (contraseñaCoincide.length > 0) {
-          const userData = buildUserPayload(usuarioExiste);
-          const token = jwt.sign({ ...userData }, secretKey, {
-            expiresIn: 60 * 60 * 24,
-          });
+      const contraseñaCoincide = usuarioExiste.password.filter((pass) =>
+        bcryptjs.compareSync(password, pass)
+      );
 
-          return res.json({
-            success: true,
-            from: from,
-            response: { token, userData, user: userData },
-            user: userData,
-            message: "Welcome back, " + userData.fullName,
-          });
-        } else {
-          return res.json({
-            success: false,
-            from: from,
-            message:
-              "You have not registered with " +
-              from +
-              ". Please Sign Up with " +
-              from +
-              " first.",
-          });
-        }
+      if (contraseñaCoincide.length > 0) {
+        const secretKey = process.env.SECRET_KEY || "MyPassword";
+        const userData = buildUserPayload(usuarioExiste);
+        const token = jwt.sign({ ...userData }, secretKey, {
+          expiresIn: 60 * 60 * 24,
+        });
+
+        return res.json({
+          success: true,
+          response: { token, userData, user: userData },
+          user: userData,
+          message: "Welcome back, " + userData.fullName,
+        });
       } else {
-        if (usuarioExiste.emailVerificado) {
-          const contraseñaCoincide = usuarioExiste.password.filter((pass) =>
-            bcryptjs.compareSync(password, pass)
-          );
-
-          if (contraseñaCoincide.length > 0) {
-            const userData = buildUserPayload(usuarioExiste);
-            const token = jwt.sign({ ...userData }, secretKey, {
-              expiresIn: 60 * 60 * 24,
-            });
-            return res.json({
-              success: true,
-              from: from,
-              response: { token, userData, user: userData },
-              user: userData,
-              message: "Welcome back, " + userData.fullName,
-            });
-          } else {
-            return res.json({
-              success: false,
-              from: from,
-              message: "Invalid email or password",
-            });
-          }
-        } else {
-          return res.json({
-            success: false,
-            from: from,
-            message:
-              "Please verify your email address before signing in.",
-          });
-        }
+        return res.json({
+          success: false,
+          message: "Invalid email or password",
+        });
       }
     } catch (error) {
       console.error("[Auth] Error in signInUser:", error.message);

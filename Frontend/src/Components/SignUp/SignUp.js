@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Link as LinkRouter, useNavigate } from "react-router-dom";
 import userActions from "../Redux/actions/userActions";
-import FacebookSignUp from "./FacebookSignUp";
 import "./styleSign.css";
 
 const COUNTRIES = [
@@ -209,10 +208,6 @@ function SignUp(props) {
               </span>
             </button>
           </form>
-
-          <div className="auth-divider">or sign up with</div>
-
-          <FacebookSignUp country={selectedCountry} />
 
           <div className="auth-switch">
             <span>Already have an account?</span>

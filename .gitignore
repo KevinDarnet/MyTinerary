@@ -8,6 +8,8 @@ build/
 Frontend/build/
 dist/
 .vercel/
+.firebase/
+Frontend/.firebase/
 
 # Environment Variables
 .env

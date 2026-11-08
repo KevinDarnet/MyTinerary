@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Link as LinkRouter, useNavigate } from "react-router-dom";
 import userActions from "../Redux/actions/userActions";
-import FacebookSignIn from "./FacebookSignIn";
 import "./styleSign.css";
 
 function SignIn(props) {
@@ -114,10 +113,6 @@ function SignIn(props) {
               </span>
             </button>
           </form>
-
-          <div className="auth-divider">or continue with</div>
-
-          <FacebookSignIn />
 
           <div className="auth-switch">
             <span>Don't have an account?</span>
